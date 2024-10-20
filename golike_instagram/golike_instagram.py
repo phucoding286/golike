@@ -21,7 +21,7 @@ def purple_color(string: str):
 
 GOLIKE_HEADERS = {
         "Accept": "application/json, text/plain, */*",
-        "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9nYXRld2F5LmdvbGlrZS5uZXRcL2FwaVwvbG9naW4iLCJpYXQiOjE3Mjc5Mjk1OTYsImV4cCI6MTc1OTQ2NTU5NiwibmJmIjoxNzI3OTI5NTk2LCJqdGkiOiIwODVJVXBmUnNjT1Fqb1RFIiwic3ViIjoyODc2NDY2LCJwcnYiOiJiOTEyNzk5NzhmMTFhYTdiYzU2NzA0ODdmZmYwMWUyMjgyNTNmZTQ4In0.w1xDhJcTqcXU8t5BrIs6HH-GIOP4U5Oj3-BY1SmGJLU",
+        "Authorization": "",
         "Connection": "keep-alive",
         "Content-Type": "application/json;charset=utf-8",
         "Host": "gateway.golike.net",
@@ -30,7 +30,7 @@ GOLIKE_HEADERS = {
         "Sec-Fetch-Dest": "empty",
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Site": "same-site",
-        "t": "VFZSamVVNTZhM3BPZW1NeFQxRTlQUT09",
+        "t": "",
         "TE": "trailers",
         "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Mobile/15E148 Snapchat/10.77.5.59 (like Safari/604.1)"
     }
@@ -110,7 +110,7 @@ INSTAGRAM_HEADER = {
         "accept-language": "us",
         "content-length": "1303",
         "content-type": "application/x-www-form-urlencoded",
-        "cookie": "dpr=1.25; ig_nrcb=1; mid=ZwKWggALAAEDrWL7H8N2TSSwzwA9; ig_did=40FB9C01-DC10-49FA-8CC8-156893EB5825; datr=lZYCZxR6Id0TJUE0KwqHC8-p; ds_user_id=65444176476; sessionid=65444176476%3AfJ2yFeRc7q4bDy%3A6%3AAYfjd4HuNL7B82ukA2gfhTaVnup-W5aFlZVca7FjlQ; csrftoken=ep2QzalKQUaJFJm2Kp80gc1xtmdeJyNe; shbid=\"17201\\05465444176476\\0541759759058:01f70e33f8d7daee4e0a336add6591854f7d340ba878a5d71c76b544fd22acd10168d739\"; shbts=\"1728223058\\05465444176476\\0541759759058:01f72eb726945e659cb78b5c01c785bcee35b279615be7f41ba90d13d1c27de0d7bbda15\"; wd=822x746; rur=\"CCO\\05465444176476\\0541759759576:01f762a4308eebbf945a0e9d8b84f0c83a9e8693e93dfef225f653da67d8bb5c00231ef8\"",
+        "cookie": "",
         "origin": "https://www.instagram.com",
         "priority": "u=1, i",
         "referer": "https://www.instagram.com/truonhfrus/",
