@@ -20,6 +20,8 @@ def wait_color(string: str):
 def purple_color(string: str):
     return colorama.Fore.MAGENTA + str(string) + colorama.Style.RESET_ALL
 
+
+
 # headers for golike account
 GOLIKE_HEADERS = {
         "Accept": "application/json, text/plain, */*",
@@ -37,6 +39,8 @@ GOLIKE_HEADERS = {
         "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Mobile/15E148 Snapchat/10.77.5.59 (like Safari/604.1)"
     }
 
+
+
 # make waiting animation theme
 def waiting_ui(timeout=5, text=""):
     for i in range(1, timeout+1):
@@ -45,6 +49,8 @@ def waiting_ui(timeout=5, text=""):
         time.sleep(1)
     print()
     return 0
+
+
 
 # get job from golike
 def get_jobs(instagram_golike_id):
@@ -68,6 +74,8 @@ def get_jobs(instagram_golike_id):
         print(f"đã có lỗi khi nhận job mã lỗi: {e}")
         return {"error": True, "status_code": gjj['status']}
 
+
+
 # drop job from golike when error
 def drop_job(ads_id, object_id, account_id):
     try:
@@ -83,6 +91,8 @@ def drop_job(ads_id, object_id, account_id):
     except:
         return {"error": "đã có lỗi khi bỏ job"}
 
+
+
 # verify job on golike when complete task for get money
 def verify_complete_job(ads_id, account_id):
   try:
@@ -97,6 +107,8 @@ def verify_complete_job(ads_id, account_id):
       print(f"đã có lỗi khi xác minh hoàn thành job mã lỗi: {e}")
       return {"error": True}
   
+
+
 # check instagram accounts linking on golike
 def check_instagram_account_id():
     response = requests.get(
@@ -179,6 +191,8 @@ INSTAGRAM_USER_AGENT = [
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 Edg/124.0.0."
     ]
 
+
+
 # get random proxy working
 def get_proxies():
     proxy = None
@@ -205,14 +219,17 @@ def get_proxies():
     print(colorama.Fore.GREEN + f"đã lấy proxy {proxy} thành công!" + colorama.Style.RESET_ALL)
     return proxy
 
+
+
 # following instagram target
 def follow_instagram(insta_link, object_id, cookies: str):
     global INSTAGRAM_DATA
     global INSTAGRAM_HEADER
+    # get x-csrftoken from string cookies and add it in headers
     INSTAGRAM_HEADER["x-csrftoken"] = cookies.split("csrftoken=")[1].split(";")[0]
-    INSTAGRAM_HEADER['cookie'] = cookies
-    INSTAGRAM_HEADER['referer'] = insta_link
-    INSTAGRAM_HEADER['user-agent'] = random.choice(INSTAGRAM_USER_AGENT)
+    INSTAGRAM_HEADER['cookie'] = cookies # add cookies in headers
+    INSTAGRAM_HEADER['referer'] = insta_link # add target instagram link on headers
+    INSTAGRAM_HEADER['user-agent'] = random.choice(INSTAGRAM_USER_AGENT) # add random user agent in headers
     INSTAGRAM_DATA["variables"] = ('{'f'"target_user_id": "{object_id}",''"container_module": "profile",''"nav_chain": "PolarisFeedRoot:feedPage:1:via_cold_start,PolarisProfilePostsTabRoot:profilePage:2:unexpected"''}')
     print(wait_color("đang thực hiện kiểm tra tài khoản instagram mục tiêu..."))
     try:
@@ -224,64 +241,83 @@ def follow_instagram(insta_link, object_id, cookies: str):
         )
         insta_json_res = response.json()['data']["xdt_create_friendship"]["friendship_status"]
         return {"following_status": insta_json_res["following"], "outgoing_request": insta_json_res['outgoing_request']}
+    # can inference None type error is this target is not found
     except TypeError as e:
         print(f"lỗi follow instagram: {e}")
         return {"page_not_found": "trang instagram này không tồn tại!"}
+    # unknow error
     except Exception as e:
         print(f"lỗi follow instagram: {e}")
         return {'error': True}
     
+
+
 # run automation get job and follow instagram and golike
 def golike_instagram_auto(instagram_golike_id_input, cookies_inp, wait_time, current_account):
     while True:
+        # print current work instagram account
         print(system_color(f"account đang làm việc hiện tại là: {current_account}"))
-        r_get_jobs = get_jobs(instagram_golike_id_input)
+        r_get_jobs = get_jobs(instagram_golike_id_input) # get job from golike
+        # if error will return this function
         if "error" in r_get_jobs:
             return {"error": r_get_jobs['error']}
+        # skip this job if job type is not follow
         if r_get_jobs[2] != "follow":
             print(error_color("không phải nhiệm vụ follow"))
             print(success_color(drop_job(r_get_jobs[1], r_get_jobs[3], instagram_golike_id_input)))
             waiting_ui(1, "vui lòng chờ đợi 1 giây")
             continue
         
+        # print the target and follow target
         print(purple_color(f"mục tiêu: {r_get_jobs[0]}"))
         follow_output = follow_instagram(r_get_jobs[0], r_get_jobs[3], cookies=cookies_inp)
         print(purple_color(follow_output))
         
+        # if follow status is have in follow output will continue check
         if 'following_status' in follow_output:
+            # if these both params is false, can inference this account temp blocking follow by instagram
             if not follow_output['following_status'] and not follow_output['outgoing_request']:
                 print(success_color(drop_job(r_get_jobs[1], r_get_jobs[3], instagram_golike_id_input)))
                 return {"error": "account instagram này đã bị chặn follow, vui lòng đổi tài khoản mới"}
+        # skip job if target in job is not found
         elif "page_not_found" in follow_output:
             print(success_color(drop_job(r_get_jobs[1], r_get_jobs[3], instagram_golike_id_input)))
             waiting_ui(wait_time, f"vui lòng chờ đợi {wait_time}s")
             continue
+        # unknow error
         elif "error" in follow_output:
             print(success_color(drop_job(r_get_jobs[1], r_get_jobs[3], instagram_golike_id_input)))
             return {"error": "account bị chặn hoặc lỗi không xác định"}
-
+        
+        # waiting 10s for verify job and get money
         waiting_ui(10, "vui lòng chờ đợi 10s để xác minh job")
-        output = verify_complete_job(r_get_jobs[1], instagram_golike_id_input)
+        output = verify_complete_job(r_get_jobs[1], instagram_golike_id_input) # verify job
+        # if error in verify job output, will skip this job and waiting for try again with new job
         if "error" in output:
             print(success_color(drop_job(r_get_jobs[1], r_get_jobs[3], instagram_golike_id_input)))
             waiting_ui(wait_time, f"vui lòng chờ đợi {wait_time}s")
             continue
+        # else print output verify job status and continue do new jobs
         else:
             print(success_color(output))
             waiting_ui(wait_time, f"vui lòng chờ đợi {wait_time}s")
             continue
 
+
+
 # golike instagram UI
 def golike_instagram_ui():
     global GOLIKE_HEADERS
-
+    # get golike authorization from user input
     golike_authorization_input = input(system_color("nhập authorization golike của bạn\n>>> "))
     GOLIKE_HEADERS['Authorization'] = golike_authorization_input
+    # get golike token from user input
     golike_token_input = input(system_color("nhập token golike của bạn\n>>> "))
     GOLIKE_HEADERS['t'] = golike_token_input
     PASSWORDS = json.load(open("./golike_instagram/password.json"))
     PASSWORDS = PASSWORDS['passwords']
     
+    # print and storage IDs and Nicknames
     print(system_color("các id của bạn là:"))
     count = 1
     IDs = []
@@ -291,14 +327,19 @@ def golike_instagram_ui():
         count += 1
         IDs.append(nickname_id[0])
         nicknames.append(nickname_id[1])
-
+    
+    # get waitime for next job from user input
     wait_time = int(input(system_color("Nhập số thời gian chờ trước khi follow tiếp theo\n>>> ")))
 
+    # loop activing forever
     while True:
         sum_login_error = 0
         sum_activate_error = 0
+
+        # loop for check and run job on list account linking on golike
         for i in range(len(IDs)):
             cookies = None
+            # try login and get sessions with password saved
             for passwd in PASSWORDS:
                 login_output = login_instagram(nicknames[i], passwd)
                 if "error" in login_output:
@@ -309,6 +350,8 @@ def golike_instagram_ui():
                     sum_login_error = 0
                     print(success_color(login_output['success']))
                     cookies = login_output['cookies']
+            # if cookies is None can inference is this account is blocked or failed login for get cookies
+            # so let's skip this account
             if cookies is None:
                 if sum_login_error >= len(IDs):
                     waiting_ui(timeout=1200, text="vui lòng đợi 10 phút để check lại và chạy follow cho tất cả tài khoản")
@@ -317,6 +360,7 @@ def golike_instagram_ui():
                     sum_login_error += 1
                     waiting_ui(5, "đợi 5s để tiếp tục")
                 continue
+            # else (if cookies if not none) will run golike automation follow instagram and get money
             else:
                 golike_auto_output = golike_instagram_auto(IDs[i], cookies, wait_time, nicknames[i])
                 if "error" in golike_auto_output:
@@ -326,6 +370,8 @@ def golike_instagram_ui():
                         waiting_ui(timeout=1200, text="vui lòng đợi 10p (1200s) để check lại và chạy follow cho tất cả tài khoản")
                 else:
                     sum_activate_error = 0
+
+
 
 # add more password for instagram
 def add_passwords_ui():
