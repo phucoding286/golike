@@ -353,7 +353,7 @@ def golike_instagram_ui():
             # if cookies is None can inference is this account is blocked or failed login for get cookies
             # so let's skip this account
             if cookies is None:
-                if sum_login_error >= len(IDs):
+                if sum_login_error >= len(IDs) - 2:
                     waiting_ui(timeout=1200, text="vui lòng đợi 10 phút để check lại và chạy follow cho tất cả tài khoản")
                     sum_login_error = 0
                 else:
@@ -366,7 +366,7 @@ def golike_instagram_ui():
                 if "error" in golike_auto_output:
                     sum_activate_error += 1
                     print(error_color(golike_auto_output['error']))
-                    if sum_activate_error > len(IDs):
+                    if sum_activate_error > len(IDs) - 2:
                         waiting_ui(timeout=1200, text="vui lòng đợi 10p (1200s) để check lại và chạy follow cho tất cả tài khoản")
                 else:
                     sum_activate_error = 0
