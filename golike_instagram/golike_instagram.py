@@ -8,6 +8,7 @@ import random
 from login_instagram import login_instagram
 colorama.init()
 
+# make color for logs
 def error_color(string: str):
     return colorama.Fore.RED + str(string) + colorama.Style.RESET_ALL
 def success_color(string: str):
@@ -19,9 +20,10 @@ def wait_color(string: str):
 def purple_color(string: str):
     return colorama.Fore.MAGENTA + str(string) + colorama.Style.RESET_ALL
 
+# headers for golike account
 GOLIKE_HEADERS = {
         "Accept": "application/json, text/plain, */*",
-        "Authorization": "",
+        "Authorization": "", # authorization golike (add later)
         "Connection": "keep-alive",
         "Content-Type": "application/json;charset=utf-8",
         "Host": "gateway.golike.net",
@@ -30,11 +32,12 @@ GOLIKE_HEADERS = {
         "Sec-Fetch-Dest": "empty",
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Site": "same-site",
-        "t": "",
+        "t": "", # token golike (add later)
         "TE": "trailers",
         "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Mobile/15E148 Snapchat/10.77.5.59 (like Safari/604.1)"
     }
 
+# make waiting animation theme
 def waiting_ui(timeout=5, text=""):
     for i in range(1, timeout+1):
         print(Fore.YELLOW + f"\r{i}s " + Style.RESET_ALL, end="")
@@ -43,15 +46,19 @@ def waiting_ui(timeout=5, text=""):
     print()
     return 0
 
+# get job from golike
 def get_jobs(instagram_golike_id):
     try:
+        # requests for get job
         get_job = requests.get(
             url=f"https://gateway.golike.net/api/advertising/publishers/instagram/jobs?instagram_account_id={instagram_golike_id}&data=null",
             headers=GOLIKE_HEADERS
         )
         gjj = get_job.json()
+        # if status code is 400 inference it's end jobs
         if gjj['status'] == 400:
             raise ValueError("đã hết jobs để làm")
+        # else get needed data
         insta_link = gjj['data']['link']
         golike_user_id = gjj['data']['id']
         task_type = gjj['data']['type']
@@ -60,7 +67,8 @@ def get_jobs(instagram_golike_id):
     except Exception as e:
         print(f"đã có lỗi khi nhận job mã lỗi: {e}")
         return {"error": True, "status_code": gjj['status']}
-    
+
+# drop job from golike when error
 def drop_job(ads_id, object_id, account_id):
     try:
         response = requests.post(
@@ -75,7 +83,7 @@ def drop_job(ads_id, object_id, account_id):
     except:
         return {"error": "đã có lỗi khi bỏ job"}
 
-
+# verify job on golike when complete task for get money
 def verify_complete_job(ads_id, account_id):
   try:
       complete_job = requests.post(
@@ -89,7 +97,7 @@ def verify_complete_job(ads_id, account_id):
       print(f"đã có lỗi khi xác minh hoàn thành job mã lỗi: {e}")
       return {"error": True}
   
-
+# check instagram accounts linking on golike
 def check_instagram_account_id():
     response = requests.get(
         url="https://gateway.golike.net/api/instagram-account",
@@ -100,7 +108,7 @@ def check_instagram_account_id():
     return insta_id
 
 
-
+# instagram headers
 INSTAGRAM_HEADER = {
         "authority": "www.instagram.com",
         "method": "POST",
@@ -110,7 +118,7 @@ INSTAGRAM_HEADER = {
         "accept-language": "us",
         "content-length": "1303",
         "content-type": "application/x-www-form-urlencoded",
-        "cookie": "",
+        "cookie": "", # cookies instagram (add later)
         "origin": "https://www.instagram.com",
         "priority": "u=1, i",
         "referer": "https://www.instagram.com/truonhfrus/",
@@ -127,11 +135,12 @@ INSTAGRAM_HEADER = {
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0",
         "x-asbd-id": "129477",
         "x-bloks-version-id": "d064162f4a1bc5cbc2a7ce44dd98b555613e0264ce1d0ebd6be60a79d3c58f44",
-        "x-csrftoken": "ep2QzalKQUaJFJm2Kp80gc1xtmdeJyNe",
+        "x-csrftoken": "", # csrftoken (add later)
         "x-fb-friendly-name": "PolarisAPIGetFrCookieQuery",
         "x-fb-lsd": "gtE021O5IF-2TGA5JwktM8",
         "x-ig-app-id": "936619743392459"
     }
+# instagram requests follow payloads
 INSTAGRAM_DATA = {
         "av": "17841469559245655",
         "__d": "www",
@@ -159,6 +168,7 @@ INSTAGRAM_DATA = {
         "server_timestamps": "true",
         "doc_id": "7275591572570580"
     }
+# instagram user agents (for random)
 INSTAGRAM_USER_AGENT = [
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.3",
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.",
@@ -169,7 +179,7 @@ INSTAGRAM_USER_AGENT = [
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 Edg/124.0.0."
     ]
 
-
+# get random proxy working
 def get_proxies():
     proxy = None
     count = 1
@@ -195,7 +205,7 @@ def get_proxies():
     print(colorama.Fore.GREEN + f"đã lấy proxy {proxy} thành công!" + colorama.Style.RESET_ALL)
     return proxy
 
-
+# following instagram target
 def follow_instagram(insta_link, object_id, cookies: str):
     global INSTAGRAM_DATA
     global INSTAGRAM_HEADER
@@ -221,7 +231,7 @@ def follow_instagram(insta_link, object_id, cookies: str):
         print(f"lỗi follow instagram: {e}")
         return {'error': True}
     
-
+# run automation get job and follow instagram and golike
 def golike_instagram_auto(instagram_golike_id_input, cookies_inp, wait_time, current_account):
     while True:
         print(system_color(f"account đang làm việc hiện tại là: {current_account}"))
@@ -261,7 +271,7 @@ def golike_instagram_auto(instagram_golike_id_input, cookies_inp, wait_time, cur
             waiting_ui(wait_time, f"vui lòng chờ đợi {wait_time}s")
             continue
 
-
+# golike instagram UI
 def golike_instagram_ui():
     global GOLIKE_HEADERS
 
@@ -317,7 +327,7 @@ def golike_instagram_ui():
                 else:
                     sum_activate_error = 0
 
-
+# add more password for instagram
 def add_passwords_ui():
     while True:
         try:
@@ -334,6 +344,7 @@ def add_passwords_ui():
             print(error_color("đã có lỗi khi thêm password"))
 
 
+# main program
 if __name__ == "__main__":
     while True:
         choose_table = [(print(system_color("1. chạy tool golike instagram")), 0), (print(system_color("2. thêm password instagram")), 1)]

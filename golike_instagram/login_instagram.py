@@ -1,23 +1,24 @@
 import time
-import hashlib
 import requests
 
+# encode password
 def encrypt_password(password):
     timestamp = int(time.time())
     enc_password = f"#PWD_INSTAGRAM_BROWSER:0:{timestamp}:{password}"
     return enc_password
 
+# login and get cookies instagram
 def login_instagram(username, password):
     url = "https://www.instagram.com/api/v1/web/accounts/login/ajax/"
     session = requests.Session()
     
-    # Lấy token CSRF
+    # get token CSRF
     csrf_token = session.get("https://www.instagram.com/").cookies['csrftoken']
 
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.6478.127 Safari/537.36",
         "X-CSRFToken": csrf_token,
-        "X-Instagram-Ajax": "1",  # Giá trị này cần được lấy từ mã nguồn hoặc theo dõi request thực tế
+        "X-Instagram-Ajax": "1",
         "X-Requested-With": "XMLHttpRequest",
         "Referer": "https://www.instagram.com/",
         "Content-Type": "application/x-www-form-urlencoded",
