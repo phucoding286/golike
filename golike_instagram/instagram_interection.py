@@ -115,7 +115,7 @@ def get_proxies():
 
 
 # following instagram target
-def follow_instagram(insta_link, object_id, cookies: str):
+def follow_instagram(insta_link, object_id, cookies: str, proxy: bool = True):
     global INSTAGRAM_DATA
     global INSTAGRAM_HEADER
     # get x-csrftoken from string cookies and add it in headers
@@ -125,12 +125,18 @@ def follow_instagram(insta_link, object_id, cookies: str):
     INSTAGRAM_HEADER['user-agent'] = random.choice(INSTAGRAM_USER_AGENT) # add random user agent in headers
     INSTAGRAM_DATA["variables"] = ('{'f'"target_user_id": "{object_id}",''"container_module": "profile",''"nav_chain": "PolarisFeedRoot:feedPage:1:via_cold_start,PolarisProfilePostsTabRoot:profilePage:2:unexpected"''}')
     print(wait_color("đang thực hiện kiểm tra tài khoản instagram mục tiêu..."))
+    
+    if proxy:
+        proxies = {'http': get_proxies()}
+    else:
+        proxies = None
+        
     try:
         response = requests.post(
             url="https://www.instagram.com/graphql/query",
             headers=INSTAGRAM_HEADER,
             data=INSTAGRAM_DATA,
-            proxies={'http': get_proxies()}
+            proxies=proxies
         )
         insta_json_res = response.json()['data']["xdt_create_friendship"]["friendship_status"]
         return {"following_status": insta_json_res["following"], "outgoing_request": insta_json_res['outgoing_request']}

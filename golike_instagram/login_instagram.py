@@ -48,11 +48,14 @@ def encrypt_password(password):
     return enc_password
 
 # login and get cookies instagram
-def login_instagram(username, password):
+def login_instagram(username, password, proxy: bool = True):
     url = "https://www.instagram.com/api/v1/web/accounts/login/ajax/"
     session = requests.Session()
     # lấy proxy cho login instagram
-    proxies = {'http': get_proxies()}
+    if proxy:
+        proxies = {'http': get_proxies()}
+    else:
+        proxies = None
     
     # get token CSRF
     csrf_token = session.get("https://www.instagram.com/", proxies=proxies).cookies['csrftoken']

@@ -47,7 +47,7 @@ TOOL BY PHUTECH
 
 
 # run automation get job and follow instagram and golike
-def golike_instagram_auto(instagram_golike_id_input, cookies_inp, wait_time, current_account):
+def golike_instagram_auto(instagram_golike_id_input, cookies_inp, wait_time, current_account, proxy: bool = True):
     while True:
         # print current work instagram account
         print(system_color(f"account đang làm việc hiện tại là: {current_account}"))
@@ -64,7 +64,7 @@ def golike_instagram_auto(instagram_golike_id_input, cookies_inp, wait_time, cur
         
         # print the target and follow target
         print(purple_color(f"mục tiêu: {r_get_jobs[0]}"))
-        follow_output = follow_instagram(r_get_jobs[0], r_get_jobs[3], cookies=cookies_inp)
+        follow_output = follow_instagram(r_get_jobs[0], r_get_jobs[3], cookies=cookies_inp, proxy=proxy)
         print(purple_color(follow_output))
         
         # if follow status is have in follow output will continue check
@@ -125,6 +125,15 @@ def golike_instagram_ui():
     # get waitime for next job from user input
     wait_time = int(input(system_color("Nhập số thời gian chờ trước khi follow tiếp theo\n>>> ")))
 
+    # ask about using proxy in activing progress or not
+    proxy_choose = input(system_color("Bạn có muốn dùng proxy trong quá trình tương tác instagram không?(Y/n)\n>>> "))
+    if proxy_choose.strip().lower() == "y":
+        print(success_color("bạn đã lựa chọn là sử dụng proxy trong quá trình"))
+        proxy = True
+    else:
+        print(error_color("bạn đã lựa chọn là không sử dụng proxy trong quá trình"))
+        proxy = False
+
     # loop activing forever
     while True:
         sum_login_error = 0
@@ -135,7 +144,7 @@ def golike_instagram_ui():
             cookies = None
             # try login and get sessions with password saved
             for passwd in PASSWORDS:
-                login_output = login_instagram(nicknames[i], passwd)
+                login_output = login_instagram(nicknames[i], passwd, proxy)
                 if "error" in login_output:
                     print(error_color(login_output['error']))
                     waiting_ui(timeout=5, text="đợi 5s để tiếp tục")
@@ -156,7 +165,7 @@ def golike_instagram_ui():
                 continue
             # else (if cookies if not none) will run golike automation follow instagram and get money
             else:
-                golike_auto_output = golike_instagram_auto(IDs[i], cookies, wait_time, nicknames[i])
+                golike_auto_output = golike_instagram_auto(IDs[i], cookies, wait_time, nicknames[i], proxy)
                 if "error" in golike_auto_output:
                     sum_activate_error += 1
                     print(error_color(golike_auto_output['error']))
