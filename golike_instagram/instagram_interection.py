@@ -91,9 +91,8 @@ INSTAGRAM_USER_AGENT = [
 # get random proxy working
 def get_proxies():
     proxy = None
-    count = 1
     while True:
-        print(colorama.Fore.BLUE + f"\r{count} đang lấy proxy cho instagram..." + colorama.Style.RESET_ALL, end="")
+        print(colorama.Fore.BLUE + f"đang lấy proxy cho follow instagram..." + colorama.Style.RESET_ALL)
         try:
             get_proxy = requests.get(
                     url="https://gimmeproxy.com/api/getProxy",
@@ -110,7 +109,6 @@ def get_proxies():
                 continue
         except:
             continue
-    print()
     print(colorama.Fore.GREEN + f"đã lấy proxy {proxy} thành công!" + colorama.Style.RESET_ALL)
     return proxy
 
