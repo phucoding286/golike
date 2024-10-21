@@ -58,7 +58,7 @@ def golike_instagram_auto(instagram_golike_id_input, cookies_inp, wait_time, cur
         # skip this job if job type is not follow
         if r_get_jobs[2] != "follow":
             print(error_color("không phải nhiệm vụ follow"))
-            print(success_color(drop_job(r_get_jobs[1], r_get_jobs[3], instagram_golike_id_input)))
+            print(success_color(drop_job(r_get_jobs[1], r_get_jobs[3], instagram_golike_id_input, r_get_jobs[2])))
             waiting_ui(1, "vui lòng chờ đợi 1 giây")
             continue
         
@@ -71,16 +71,16 @@ def golike_instagram_auto(instagram_golike_id_input, cookies_inp, wait_time, cur
         if 'following_status' in follow_output:
             # if these both params is false, can inference this account temp blocking follow by instagram
             if not follow_output['following_status'] and not follow_output['outgoing_request']:
-                print(success_color(drop_job(r_get_jobs[1], r_get_jobs[3], instagram_golike_id_input)))
+                print(success_color(drop_job(r_get_jobs[1], r_get_jobs[3], instagram_golike_id_input, r_get_jobs[2])))
                 return {"error": "account instagram này đã bị chặn follow, vui lòng đổi tài khoản mới"}
         # skip job if target in job is not found
         elif "page_not_found" in follow_output:
-            print(success_color(drop_job(r_get_jobs[1], r_get_jobs[3], instagram_golike_id_input)))
+            print(success_color(drop_job(r_get_jobs[1], r_get_jobs[3], instagram_golike_id_input, r_get_jobs[2])))
             waiting_ui(wait_time, f"vui lòng chờ đợi {wait_time}s")
             continue
         # unknow error
         elif "error" in follow_output:
-            print(success_color(drop_job(r_get_jobs[1], r_get_jobs[3], instagram_golike_id_input)))
+            print(success_color(drop_job(r_get_jobs[1], r_get_jobs[3], instagram_golike_id_input, r_get_jobs[2])))
             return {"error": "account bị chặn hoặc lỗi không xác định"}
         
         # waiting 10s for verify job and get money
@@ -88,7 +88,7 @@ def golike_instagram_auto(instagram_golike_id_input, cookies_inp, wait_time, cur
         output = verify_complete_job(r_get_jobs[1], instagram_golike_id_input) # verify job
         # if error in verify job output, will skip this job and waiting for try again with new job
         if "error" in output:
-            print(success_color(drop_job(r_get_jobs[1], r_get_jobs[3], instagram_golike_id_input)))
+            print(success_color(drop_job(r_get_jobs[1], r_get_jobs[3], instagram_golike_id_input, r_get_jobs[2])))
             waiting_ui(wait_time, f"vui lòng chờ đợi {wait_time}s")
             continue
         # else print output verify job status and continue do new jobs

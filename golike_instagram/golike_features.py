@@ -75,12 +75,12 @@ def get_jobs(instagram_golike_id):
 
 
 # drop job from golike when error
-def drop_job(ads_id, object_id, account_id):
+def drop_job(ads_id, object_id, account_id, task_type):
     try:
         response = requests.post(
             url="https://gateway.golike.net/api/advertising/publishers/instagram/skip-jobs",
             headers=GOLIKE_HEADERS,
-            json={"account_id": account_id, "ads_id": ads_id, "object_id": object_id, "type": "follow"}
+            json={"account_id": account_id, "ads_id": ads_id, "object_id": object_id, "type": task_type}
         )
         if response.status_code == 200:
             return {"success": "đã bỏ job thành công"}
