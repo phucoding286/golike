@@ -1,7 +1,5 @@
 import requests
 import json
-from bs4 import BeautifulSoup
-import re
 
 headers = {
   "authority": "api.twitter.com",
@@ -72,4 +70,4 @@ def login_twitter(username, password):
     x_csrf_token = r.cookies['ct0']
     return x_csrf_token, cookie
 
-print(login_twitter("", ""))
+# print(login_twitter("kiemtienon63911", ""))

@@ -59,30 +59,43 @@ def golike_instagram_auto(instagram_golike_id_input, cookies_inp, wait_time, cur
         if "error" in r_get_jobs:
             return {"error": r_get_jobs['error']}
         # skip this job if job type is not follow
-        if r_get_jobs[2] != "follow":
-            print(error_color("không phải nhiệm vụ follow"))
+        if r_get_jobs[2].strip().lower() == "follow":
+            # print the target and follow target
+            print(purple_color(f"mục tiêu: {r_get_jobs[0]}"))
+            follow_like_output = follow_instagram(r_get_jobs[0], r_get_jobs[3], cookies=cookies_inp, proxy=proxy)
+            print(purple_color(follow_like_output))
+
+        elif r_get_jobs[2].strip().lower() == "like":
+            # print the target and like target
+            print(purple_color(f"mục tiêu: {r_get_jobs[0]}"))
+            follow_like_output = follow_instagram(r_get_jobs[0], r_get_jobs[-1], cookies=cookies_inp, proxy=proxy)
+            print(purple_color(follow_like_output))
+
+        else:
+            print(error_color("không phải nhiệm vụ follow và like"))
             print(success_color(drop_job(r_get_jobs[1], r_get_jobs[3], instagram_golike_id_input, r_get_jobs[2])))
             waiting_ui(5, "vui lòng chờ đợi 5 giây")
             continue
         
-        # print the target and follow target
-        print(purple_color(f"mục tiêu: {r_get_jobs[0]}"))
-        follow_output = follow_instagram(r_get_jobs[0], r_get_jobs[3], cookies=cookies_inp, proxy=proxy)
-        print(purple_color(follow_output))
-        
         # if follow status is have in follow output will continue check
-        if 'following_status' in follow_output:
+        if 'following_status' in follow_like_output:
             # if these both params is false, can inference this account temp blocking follow by instagram
-            if not follow_output['following_status'] and not follow_output['outgoing_request']:
+            if not follow_like_output['following_status'] and not follow_like_output['outgoing_request']:
                 print(success_color(drop_job(r_get_jobs[1], r_get_jobs[3], instagram_golike_id_input, r_get_jobs[2])))
-                return {"error": "account instagram này đã bị chặn follow, vui lòng đổi tài khoản mới"}
+                return {"error": "account instagram này đã bị chặn like/follow, vui lòng đổi tài khoản mới"}
+        # if follow status is have in follow output will continue check
+        elif 'is_final' in follow_like_output:
+            # if these both params is false, can inference this account temp blocking follow by instagram
+            if not follow_like_output['is_final']:
+                print(success_color(drop_job(r_get_jobs[1], r_get_jobs[3], instagram_golike_id_input, r_get_jobs[2])))
+                return {"error": "account instagram này đã bị chặn like/follow, vui lòng đổi tài khoản mới"}
         # skip job if target in job is not found
-        elif "page_not_found" in follow_output:
+        elif "page_not_found" in follow_like_output:
             print(success_color(drop_job(r_get_jobs[1], r_get_jobs[3], instagram_golike_id_input, r_get_jobs[2])))
             waiting_ui(wait_time, f"vui lòng chờ đợi {wait_time}s")
             continue
         # unknow error
-        elif "error" in follow_output:
+        elif "error" in follow_like_output:
             print(success_color(drop_job(r_get_jobs[1], r_get_jobs[3], instagram_golike_id_input, r_get_jobs[2])))
             return {"error": "account bị chặn hoặc lỗi không xác định"}
         

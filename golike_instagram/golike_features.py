@@ -67,7 +67,9 @@ def get_jobs(instagram_golike_id):
         golike_user_id = gjj['data']['id']
         task_type = gjj['data']['type']
         object_id = gjj['data']['object_id']
-        return insta_link, golike_user_id, task_type, object_id, {"status_code": gjj['status'], 'status': gjj['success']}
+        like_target = json.loads(gjj['data']['object_data'])['pk'] if task_type.lower().strip() == "like" else None
+
+        return insta_link, golike_user_id, task_type, object_id, {"status_code": gjj['status'], 'status': gjj['success']}, like_target
     except Exception as e:
         print(f"đã có lỗi khi nhận job mã lỗi: {e}")
         return {"error": True, "status_code": gjj['status']}

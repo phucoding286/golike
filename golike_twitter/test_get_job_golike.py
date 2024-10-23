@@ -3,7 +3,7 @@ import requests
 # headers for golike account
 GOLIKE_HEADERS = {
         "Accept": "application/json, text/plain, */*",
-        "Authorization": "", # authorization golike (add later)
+        "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9nYXRld2F5LmdvbGlrZS5uZXRcL2FwaVwvbG9naW4iLCJpYXQiOjE3Mjg3MTI0OTMsImV4cCI6MTc2MDI0ODQ5MywibmJmIjoxNzI4NzEyNDkzLCJqdGkiOiJ5MVZDTVZoTkQzdzNuMnhVIiwic3ViIjoyODc2NDY2LCJwcnYiOiJiOTEyNzk5NzhmMTFhYTdiYzU2NzA0ODdmZmYwMWUyMjgyNTNmZTQ4In0.M6E40rosApqFQjs8NLfo8M_3kTcQpaLW2STaliMyLwI", # authorization golike (add later)
         "Connection": "keep-alive",
         "Content-Type": "application/json;charset=utf-8",
         "Host": "gateway.golike.net",

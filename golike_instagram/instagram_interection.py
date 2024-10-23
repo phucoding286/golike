@@ -48,7 +48,7 @@ INSTAGRAM_HEADER = {
         "x-ig-app-id": "936619743392459"
     }
 # instagram requests follow payloads
-INSTAGRAM_DATA = {
+INSTAGRAM_FOLLOW_DATA = {
         "av": "17841469559245655",
         "__d": "www",
         "__user": "0",
@@ -72,9 +72,37 @@ INSTAGRAM_DATA = {
         "fb_api_caller_class": "RelayModern",
         "fb_api_req_friendly_name": "usePolarisFollowMutation",
         "variables": "{\"target_user_id\":\"65635471598\",\"container_module\":\"profile\",\"nav_chain\":\"PolarisFeedRoot:feedPage:1:via_cold_start,PolarisProfilePostsTabRoot:profilePage:2:unexpected\"}",
-        "server_timestamps": "true",
+        "server_timestamps": "True",
         "doc_id": "7275591572570580"
     }
+# instagram requests like payloads
+INSTAGRAM_LIKE_DATA = {
+  "av": "17841469741829738",
+  "__d": "www",
+  "__user": "0",
+  "__a": "1",
+  "__req": "t",
+  "__hs": "20019.HYP:instagram_web_pkg.2.1..0.1",
+  "dpr": "1",
+  "__ccg": "EXCELLENT",
+  "__rev": "1017590237",
+  "__s": "spxbsq:cbnr63:a7dtyg",
+  "__hsi": "7428978248364380201",
+  "__dyn": "7xeUjG1mxu1syUbFp41twpUnwgU7SbzEdF8aUco2qwJxS0k24o1DU2_CwjE1xoswaq0yE462mcw5Mx62G5UswoEcE7O2l0Fwqo31w9O1TwQzXwae4UaEW2G0AEco5G0zK5o4q3y1Sx-0lKq2-azqwt8d-2u2J0bS1LwTwKG1pg2fwxyo6O1FwlEcUed6goK2O4UrAwHxW1oCz8rDwzwrE5SEymUhw",
+  "__csr": "igJ0AijgX5HLFPiRblOikpF9l9kPn8luh4ALl4R8zz99kiEC8ACGQUzQWXxeiKHKbiIGGiih95BjGHh8Gm9DCQEF2F4jKcx3CxGm9-9K9wIjy8ySiqEjmGKmHoLAKXLAKcCBjCCy9UC58y2CWg01eeu19CDwhQHF0Awda0pKuE1Po11oq8VQaIw6xwzwTAg3Kw16204sUyhw28U7q1388zuK619QQnigrwmo1yiyE-3W3QFUAwR5KR282DDwGooxUg9yEdUay1K7C1qGdw_zVEO0NXAwlU3BwM2y20jwaK6A5U0c4E04GC06Zo",
+  "__comet_req": "7",
+  "fb_dtsg": "NAcOD8Fa84LbWEWYvLE6tdA0uxBP20oA7QRYtgNlWFx9ojdVcT1XzMQ:17865379441060568:1729692751",
+  "jazoest": "26119",
+  "lsd": "1BJCA8gh8AoA_mi8ju3VAA",
+  "__spin_r": "1017590237",
+  "__spin_b": "trunk",
+  "__spin_t": "1729693787",
+  "fb_api_caller_class": "RelayModern",
+  "fb_api_req_friendly_name": "usePolarisLikeMediaLikeMutation",
+  "variables": ('{'f'"media_id":"test","container_module":null,"inventory_source":null,"ranking_info_token":null,"nav_chain":null''}'),
+  "server_timestamps": True,
+  "doc_id": "8552604541488484"
+}
 # instagram user agents (for random)
 INSTAGRAM_USER_AGENT = [
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.3",
@@ -114,16 +142,16 @@ def get_proxies():
 
 
 
-# following instagram target
-def follow_instagram(insta_link, object_id, cookies: str, proxy: bool = True):
-    global INSTAGRAM_DATA
+# like instagram target
+def like_instagram(insta_link, object_id, cookies: str, proxy: bool = True):
+    global INSTAGRAM_LIKE_DATA
     global INSTAGRAM_HEADER
     # get x-csrftoken from string cookies and add it in headers
     INSTAGRAM_HEADER["x-csrftoken"] = cookies.split("csrftoken=")[1].split(";")[0]
     INSTAGRAM_HEADER['cookie'] = cookies # add cookies in headers
     INSTAGRAM_HEADER['referer'] = insta_link # add target instagram link on headers
     INSTAGRAM_HEADER['user-agent'] = random.choice(INSTAGRAM_USER_AGENT) # add random user agent in headers
-    INSTAGRAM_DATA["variables"] = ('{'f'"target_user_id": "{object_id}",''"container_module": "profile",''"nav_chain": "PolarisFeedRoot:feedPage:1:via_cold_start,PolarisProfilePostsTabRoot:profilePage:2:unexpected"''}')
+    INSTAGRAM_LIKE_DATA["variables"] = ('{'f'"media_id":"{object_id}","container_module":null,"inventory_source":null,"ranking_info_token":null,"nav_chain":null''}')
     print(wait_color("đang thực hiện kiểm tra tài khoản instagram mục tiêu..."))
     
     if proxy:
@@ -135,7 +163,44 @@ def follow_instagram(insta_link, object_id, cookies: str, proxy: bool = True):
         response = requests.post(
             url="https://www.instagram.com/graphql/query",
             headers=INSTAGRAM_HEADER,
-            data=INSTAGRAM_DATA,
+            data=INSTAGRAM_LIKE_DATA,
+            proxies=proxies
+        )
+        insta_json_res = response.json()['extensions']
+        return insta_json_res
+    # can inference None type error is this target is not found
+    except TypeError as e:
+        print(f"lỗi follow instagram: {e}")
+        return {"page_not_found": "trang instagram này không tồn tại!"}
+    # unknow error
+    except Exception as e:
+        print(f"lỗi follow instagram: {e}")
+        return {'error': True}
+
+
+
+# following instagram target
+def follow_instagram(insta_link, object_id, cookies: str, proxy: bool = True):
+    global INSTAGRAM_FOLLOW_DATA
+    global INSTAGRAM_HEADER
+    # get x-csrftoken from string cookies and add it in headers
+    INSTAGRAM_HEADER["x-csrftoken"] = cookies.split("csrftoken=")[1].split(";")[0]
+    INSTAGRAM_HEADER['cookie'] = cookies # add cookies in headers
+    INSTAGRAM_HEADER['referer'] = insta_link # add target instagram link on headers
+    INSTAGRAM_HEADER['user-agent'] = random.choice(INSTAGRAM_USER_AGENT) # add random user agent in headers
+    INSTAGRAM_FOLLOW_DATA["variables"] = ('{'f'"target_user_id": "{object_id}",''"container_module": "profile",''"nav_chain": "PolarisFeedRoot:feedPage:1:via_cold_start,PolarisProfilePostsTabRoot:profilePage:2:unexpected"''}')
+    print(wait_color("đang thực hiện kiểm tra tài khoản instagram mục tiêu..."))
+    
+    if proxy:
+        proxies = {'http': get_proxies()}
+    else:
+        proxies = None
+        
+    try:
+        response = requests.post(
+            url="https://www.instagram.com/graphql/query",
+            headers=INSTAGRAM_HEADER,
+            data=INSTAGRAM_FOLLOW_DATA,
             proxies=proxies
         )
         insta_json_res = response.json()['data']["xdt_create_friendship"]["friendship_status"]

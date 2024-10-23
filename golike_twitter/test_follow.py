@@ -1,30 +1,32 @@
 import requests
 
 headers = {
-  "authority": "api.twitter.com",
+  "authority": "x.com",
   "method": "POST",
-  "path": "/1.1/onboarding/task.json?flow_name=login",
+  "path": "/i/api/1.1/friendships/create.json",
   "scheme": "https",
   "accept": "*/*",
   "accept-encoding": "gzip, deflate, br, zstd",
-  "accept-language": "vi",
+  "accept-language": "vi,en;q=0.9,en-GB;q=0.8,en-US;q=0.7",
   "authorization": "Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA",
-  "content-length": "930",
-  "content-type": "application/json",
+  "content-length": "306",
+  "content-type": "application/x-www-form-urlencoded",
   "cookie": "", # add later in code
-  "origin": "https://twitter.com",
+  "origin": "https://x.com",
   "priority": "u=1, i",
-  "referer": "https://twitter.com/",
+  "referer": "", # add later in code
   "sec-ch-ua": "\"Microsoft Edge\";v=\"129\", \"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"129\"",
   "sec-ch-ua-mobile": "?0",
   "sec-ch-ua-platform": "\"Windows\"",
   "sec-fetch-dest": "empty",
   "sec-fetch-mode": "cors",
-  "sec-fetch-site": "same-site",
+  "sec-fetch-site": "same-origin",
   "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0",
-  "x-client-transaction-id": "RzbFRPaMDR+IPONaBuOeMJBLIyUChfRxAC3w8MmgZ/IX31ItIbCThaQoReE/37eqLrKDgEX9BnRplJXkV+0/uCd3t+MNRA",
-  "x-guest-token": "1849048881352556934",
+  "x-client-transaction-id": "jRl287bDW1N1cOL7VOPwmTzLNkcHHFYbPXKOdvzkA34aSgphBzhK0HFgpo/Rs7H7g1IARI9GSNJraXTqmZ5D0LskCjS9jg",
+  "x-client-uuid": "cfca0c29-831a-4039-b664-edaf45cbd7ee",
+  "x-csrf-token": "", # add later in code
   "x-twitter-active-user": "yes",
+  "x-twitter-auth-type": "OAuth2Session",
   "x-twitter-client-language": "vi"
 }
 
@@ -41,26 +43,27 @@ follow_payloads = {
   "include_ext_verified_type": 1,
   "include_ext_profile_image_shape": 1,
   "skip_status": 1,
-  "user_id": 109065990
+  "user_id": "" # add later in code
 }
 
 url = "https://x.com/i/api/1.1/friendships/create.json"
 
-def tw_follow(target_id: int):
-    # headers['cookie'] = cookie
+def tw_follow(cookie: str, x_csrf_token: str, target_id: int, target_link: str):
+    headers['cookie'] = cookie
+    headers['x-csrf-token'] = x_csrf_token
     follow_payloads['user_id'] = target_id
-    try:
-        response = requests.post(
+    headers['referer'] = target_link
+
+    response = requests.post(
             url=url,
             headers=headers,
-            json=follow_payloads
+            data=follow_payloads
         )
-        return response.status_code, response.text
-    except:
-        return "đã có lỗi"
+    return response.status_code, response.text
     
 
-from test_login2 import login_twitter
+from test_login import login_twitter
 
-headers = login_twitter("kiemtienon63911", "7vnrzkseven")
-print(tw_follow(25073877))
+x_csrf_token, cookie = login_twitter("kiemtienon63911", "")
+target_link = "https://x.com/realDonaldTrump"
+print(tw_follow(cookie, x_csrf_token, 25073877, target_link))
