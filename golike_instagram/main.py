@@ -59,7 +59,7 @@ def golike_instagram_auto(instagram_golike_id_input, cookies_inp, wait_time, cur
         if r_get_jobs[2] != "follow":
             print(error_color("không phải nhiệm vụ follow"))
             print(success_color(drop_job(r_get_jobs[1], r_get_jobs[3], instagram_golike_id_input, r_get_jobs[2])))
-            waiting_ui(1, "vui lòng chờ đợi 1 giây")
+            waiting_ui(5, "vui lòng chờ đợi 5 giây")
             continue
         
         # print the target and follow target
