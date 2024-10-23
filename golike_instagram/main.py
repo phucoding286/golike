@@ -43,6 +43,9 @@ def waiting_ui(timeout=5, text=""):
 
 print(system_color("""
 TOOL BY PHUTECH
+facebook: https://www.facebook.com/profile.php?id=61562099241369
+github: https://github.com/phucoding286/
+youtube: https://www.youtube.com/@phucoding286
 """))
 
 
