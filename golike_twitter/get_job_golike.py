@@ -3,7 +3,7 @@ import requests
 # headers for golike account
 GOLIKE_HEADERS = {
         "Accept": "application/json, text/plain, */*",
-        "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9nYXRld2F5LmdvbGlrZS5uZXRcL2FwaVwvbG9naW4iLCJpYXQiOjE3Mjg3MTI0OTMsImV4cCI6MTc2MDI0ODQ5MywibmJmIjoxNzI4NzEyNDkzLCJqdGkiOiJ5MVZDTVZoTkQzdzNuMnhVIiwic3ViIjoyODc2NDY2LCJwcnYiOiJiOTEyNzk5NzhmMTFhYTdiYzU2NzA0ODdmZmYwMWUyMjgyNTNmZTQ4In0.M6E40rosApqFQjs8NLfo8M_3kTcQpaLW2STaliMyLwI", # authorization golike (add later)
+        "Authorization": "", # authorization golike (add later)
         "Connection": "keep-alive",
         "Content-Type": "application/json;charset=utf-8",
         "Host": "gateway.golike.net",
@@ -12,7 +12,7 @@ GOLIKE_HEADERS = {
         "Sec-Fetch-Dest": "empty",
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Site": "same-site",
-        "t": "VFZSamVVOVVWWGRQVkVGNFQxRTlQUT09", # token golike (add later)
+        "t": "", # token golike (add later)
         "TE": "trailers",
         "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Mobile/15E148 Snapchat/10.77.5.59 (like Safari/604.1)"
     }

@@ -74,8 +74,13 @@ def get_proxies():
     print(colorama.Fore.GREEN + f"đã lấy proxy {proxy} thành công!" + colorama.Style.RESET_ALL)
     return proxy
 
-def tw_follow(cookie: str, x_csrf_token: str, target_id: int, target_link: str):
-    proxies = {"http": get_proxies()}
+
+# follow twitter
+def tw_follow(cookie: str, x_csrf_token: str, target_id: int, target_link: str, proxy: bool = True):
+    if proxy:
+        proxies = {"http": get_proxies()}
+    else:
+        proxies = None
     headers['cookie'] = cookie
     headers['x-csrf-token'] = x_csrf_token
     follow_payloads['user_id'] = target_id
