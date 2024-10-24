@@ -1,4 +1,6 @@
 import requests
+import colorama
+colorama.init()
 
 headers = {
   "authority": "x.com",
@@ -48,22 +50,58 @@ follow_payloads = {
 
 url = "https://x.com/i/api/1.1/friendships/create.json"
 
+# get random proxy working
+def get_proxies():
+    proxy = None
+    while True:
+        print(colorama.Fore.BLUE + f"đang lấy proxy cho follow twitter..." + colorama.Style.RESET_ALL)
+        try:
+            get_proxy = requests.get(
+                    url="https://gimmeproxy.com/api/getProxy",
+                )
+            proxy = f"http://{get_proxy.json()['ip']}:{get_proxy.json()['port']}"
+            test_proxy = requests.get(
+                url="https://google.com/",
+                proxies={"http": proxy},
+                timeout=2
+            )
+            if test_proxy.status_code == 200:
+                break
+            else:
+                continue
+        except:
+            continue
+    print(colorama.Fore.GREEN + f"đã lấy proxy {proxy} thành công!" + colorama.Style.RESET_ALL)
+    return proxy
+
 def tw_follow(cookie: str, x_csrf_token: str, target_id: int, target_link: str):
+    proxies = {"http": get_proxies()}
     headers['cookie'] = cookie
     headers['x-csrf-token'] = x_csrf_token
     follow_payloads['user_id'] = target_id
     headers['referer'] = target_link
-
-    response = requests.post(
-            url=url,
-            headers=headers,
-            data=follow_payloads
-        )
-    return response.status_code, response.text
-    
-
-from test_login import login_twitter
-
-x_csrf_token, cookie = login_twitter("kiemtienon63911", "")
-target_link = "https://x.com/realDonaldTrump"
-print(tw_follow(cookie, x_csrf_token, 25073877, target_link))
+    try:
+        response = requests.post(
+                url=url,
+                headers=headers,
+                data=follow_payloads,
+                proxies=proxies
+            )
+        response = requests.post(
+                url=url,
+                headers=headers,
+                data=follow_payloads,
+                proxies=proxies
+            )
+        response_json = response.json()
+        if "errors" in response_json:
+            response_json['status_code'] = response.status_code
+            return response_json
+        elif "following" in response_json:
+            response_json = {"following": response_json['following']}
+            response_json['status_code'] = response.status_code
+            return response_json
+        else:
+            return "lỗi không xác định"
+    except Exception as e:
+        return f"đã có lỗi, mã lỗi: {e}"

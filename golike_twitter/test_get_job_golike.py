@@ -12,7 +12,7 @@ GOLIKE_HEADERS = {
         "Sec-Fetch-Dest": "empty",
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Site": "same-site",
-        "t": "", # token golike (add later)
+        "t": "VFZSamVVOVVWWGRQVkVGNFQxRTlQUT09", # token golike (add later)
         "TE": "trailers",
         "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Mobile/15E148 Snapchat/10.77.5.59 (like Safari/604.1)"
     }
@@ -66,7 +66,17 @@ def drop_job(ads_id, object_id, account_id):
     except:
         return {"error": "đã có lỗi khi bỏ job"}
 
-account_id, username = check_tw_account_id()[0]
-r_get_job = get_jobs(account_id)
-print(r_get_job)
-print(drop_job(r_get_job[1], r_get_job[3], account_id))
+
+# verify job on golike when complete task for get money
+def verify_complete_job(ads_id, account_id):
+  try:
+      complete_job = requests.post(
+        url="https://gateway.golike.net/api/advertising/publishers/twitter/complete-jobs",
+        headers=GOLIKE_HEADERS,
+        json={"async": True, "captcha": "recaptcha", "data": None, "account_id": account_id, "ads_id": ads_id}
+      )
+      c = complete_job.json()
+      return (c['status'], f"trạng thái: [{c['status']}] -> {'thành công' if c['success'] else 'không thành công'}", f"tiền công -> {c['data']['prices']}đ", f'message: -> {c["message"]}')
+  except Exception as e:
+      print(f"đã có lỗi khi xác minh hoàn thành job mã lỗi: {e}")
+      return {"error": True}

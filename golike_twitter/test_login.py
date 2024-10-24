@@ -1,5 +1,7 @@
 import requests
 import json
+import colorama
+colorama.init()
 
 headers = {
   "authority": "api.twitter.com",
@@ -29,18 +31,43 @@ headers = {
   "x-twitter-client-language": "vi"
 }
 
+# get random proxy working
+def get_proxies():
+    proxy = None
+    while True:
+        print(colorama.Fore.BLUE + f"đang lấy proxy cho login twitter..." + colorama.Style.RESET_ALL)
+        try:
+            get_proxy = requests.get(
+                    url="https://gimmeproxy.com/api/getProxy",
+                )
+            proxy = f"http://{get_proxy.json()['ip']}:{get_proxy.json()['port']}"
+            test_proxy = requests.get(
+                url="https://google.com/",
+                proxies={"http": proxy},
+                timeout=2
+            )
+            if test_proxy.status_code == 200:
+                break
+            else:
+                continue
+        except:
+            continue
+    print(colorama.Fore.GREEN + f"đã lấy proxy {proxy} thành công!" + colorama.Style.RESET_ALL)
+    return proxy
+
 def login_twitter(username, password):
+    proxies = {"http": get_proxies()}
     user_agent = { 'User-Agent' : 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' }
 
     # lấy guest token
-    r = requests.get("https://x.com/?mx=2", headers=user_agent)
+    r = requests.get("https://x.com/?mx=2", headers=user_agent, proxies=proxies)
     headers['x-guest-token'] = r.text.split("gt=")[1].split(';')[0]
 
     url_flow_1 = "https://api.twitter.com/1.1/onboarding/task.json?flow_name=login"
     url_flow_2 = "https://api.twitter.com/1.1/onboarding/task.json"
     # Flow 1
     data = {'' : ''}
-    r = requests.post(url_flow_1, headers=headers, data=json.dumps(data))
+    r = requests.post(url_flow_1, headers=headers, data=json.dumps(data), proxies=proxies)
     flow_token = json.loads(r.text)['flow_token']
     cookie = ';'.join(['%s=%s' % (name, value) for (name, value) in r.cookies.get_dict(domain=".twitter.com").items()])
     print(f"[*] flow_token: {flow_token}")
@@ -48,19 +75,19 @@ def login_twitter(username, password):
     # Flow 2
     data = {'flow_token' : flow_token, "subtask_inputs" : []}
     headers['cookie'] = cookie
-    r = requests.post(url_flow_2, headers=headers, json=data)
+    r = requests.post(url_flow_2, headers=headers, json=data, proxies=proxies)
     flow_token = json.loads(r.text)['flow_token']
     print(f"[*] flow_token: {flow_token}")
 
     # Flow 3
     data = {"flow_token": flow_token ,"subtask_inputs":[{"subtask_id":"LoginEnterUserIdentifierSSO","settings_list":{"setting_responses":[{"key":"user_identifier","response_data":{"text_data":{"result":username}}}],"link":"next_link"}}]}
-    r = requests.post(url_flow_2, headers=headers, json=data)
+    r = requests.post(url_flow_2, headers=headers, json=data, proxies=proxies)
     flow_token = json.loads(r.text)['flow_token']
     print(f"[*] flow_token: {flow_token}")
 
     # Flow 4
     data = {"flow_token": flow_token ,"subtask_inputs":[{"subtask_id":"LoginEnterPassword","enter_password":{"password":password,"link":"next_link"}}]}
-    r = requests.post(url_flow_2, headers=headers, json=data)
+    r = requests.post(url_flow_2, headers=headers, json=data, proxies=proxies)
     flow_token = json.loads(r.text)['flow_token']
     print(f"[*] flow_token: {flow_token}")
     
@@ -69,5 +96,3 @@ def login_twitter(username, password):
     # lấy mã x_csrf_token đã đăng nhập để tương tác sau này
     x_csrf_token = r.cookies['ct0']
     return x_csrf_token, cookie
-
-# print(login_twitter("kiemtienon63911", ""))

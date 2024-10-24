@@ -10,7 +10,8 @@ from golike_features import (
     GOLIKE_HEADERS
 )
 from instagram_interection import (
-    follow_instagram
+    follow_instagram,
+    like_instagram
 )
 from login_instagram import (
     login_instagram
@@ -68,7 +69,7 @@ def golike_instagram_auto(instagram_golike_id_input, cookies_inp, wait_time, cur
         elif r_get_jobs[2].strip().lower() == "like":
             # print the target and like target
             print(purple_color(f"mục tiêu: {r_get_jobs[0]}"))
-            follow_like_output = follow_instagram(r_get_jobs[0], r_get_jobs[-1], cookies=cookies_inp, proxy=proxy)
+            follow_like_output = like_instagram(r_get_jobs[0], r_get_jobs[-1], cookies=cookies_inp, proxy=proxy)
             print(purple_color(follow_like_output))
 
         else:
