@@ -176,6 +176,7 @@ def golike_instagram_ui():
             for passwd in PASSWORDS:
                 login_output = login_instagram(nicknames[i], passwd, proxy_login)
                 if "error" in login_output:
+                    sum_login_error += 1
                     print(error_color(login_output['error']))
                     waiting_ui(timeout=5, text="đợi 5s để tiếp tục")
                     continue

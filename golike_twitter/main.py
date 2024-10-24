@@ -128,6 +128,7 @@ def golike_auto_tw_main():
             for passwd in PASSWORDS:
                 login_output = login_twitter(nicknames[i], passwd, proxy_login)
                 if "error" in login_output:
+                    sum_login_error += 1
                     print(error_color(login_output['error']))
                     waiting_ui(timeout=5, text="đợi 5s để tiếp tục")
                     continue
