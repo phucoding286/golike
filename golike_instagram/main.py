@@ -198,7 +198,7 @@ def golike_instagram_ui():
             # else (if cookies if not none) will run golike automation follow instagram and get money
             else:
                 golike_auto_output = golike_instagram_auto(IDs[i], cookies, wait_time, nicknames[i], proxy_interaction, max_times_inp)
-                
+
                 if golike_auto_output is None:
                     sum_activate_error = 0
                     continue
@@ -206,13 +206,15 @@ def golike_instagram_ui():
                 elif "error" in golike_auto_output:
                     sum_activate_error += 1
                     print(error_color(golike_auto_output['error']))
-                    if sum_activate_error > len(IDs) - 2:
-                        waiting_ui(timeout=1200, text="vui lòng đợi 20p (1200s) để check lại và chạy follow cho tất cả tài khoản")
-                        sum_activate_error = 0
 
                 elif "error_not_import" in golike_auto_output:
                     print(error_color(golike_auto_output['error_not_import']))
                     sum_activate_error += 1
+
+                if sum_activate_error > len(IDs) - 2:
+                    waiting_ui(timeout=1200, text="vui lòng đợi 20p (1200s) để check lại và chạy follow cho tất cả tài khoản")
+                    sum_activate_error = 0
+                    continue
 
 
 
