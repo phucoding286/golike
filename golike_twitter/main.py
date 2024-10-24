@@ -159,6 +159,7 @@ def golike_auto_tw_main():
 
                 elif "error_not_import" in golike_auto_output:
                     print(error_color(golike_auto_output['error_not_import']))
+                    sum_activate_error += 1
 
                 elif golike_auto_output is None:
                     sum_activate_error = 0
