@@ -150,7 +150,12 @@ def golike_auto_tw_main():
             # else (if cookies if not none) will run golike automation follow instagram and get money
             else:
                 golike_auto_output = golike_tw_auto(IDs[i], x_csrf_token, cookies, wait_time, nicknames[i], proxy_interaction, max_times_inp)
-                if "error" in golike_auto_output:
+                
+                if golike_auto_output is None:
+                    sum_activate_error = 0
+                    continue
+                
+                elif "error" in golike_auto_output:
                     sum_activate_error += 1
                     print(error_color(golike_auto_output['error']))
                     if sum_activate_error > len(IDs) - 2:
@@ -160,9 +165,6 @@ def golike_auto_tw_main():
                 elif "error_not_import" in golike_auto_output:
                     print(error_color(golike_auto_output['error_not_import']))
                     sum_activate_error += 1
-
-                elif golike_auto_output is None:
-                    sum_activate_error = 0
 
 
 if __name__ == "__main__":
