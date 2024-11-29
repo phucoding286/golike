@@ -1,0 +1,1 @@
+python ./instagram/main.py
