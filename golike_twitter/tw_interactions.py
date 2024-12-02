@@ -157,7 +157,7 @@ def __follow(cookie: str, target_id: int, target_link: str, proxy: bool = True, 
         return {"error": f"đã có lỗi, mã lỗi: {e}"}
     
 
-def tw_follow(cookie: str, target_id: int, target_link: str, proxy: bool = True, username=None, max_try=20):
+def tw_follow(cookie: str, target_id: int, target_link: str, proxy: bool = True, username=None, max_try=1):
     follow_output = {"error": "empty"}
     for i in range(max_try):
         follow_output = __follow(cookie, target_id, target_link, proxy)

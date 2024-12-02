@@ -100,7 +100,7 @@ def __login(username, password, proxy: bool = True):
     # get proxy
     if proxy is True:
         proxies = {"http": get_proxies()}
-    elif proxy is None:
+    elif proxy is None or not proxy:
         proxies = None
     elif isinstance(proxy, dict) and "http" in proxy or "https" in proxy:
         try:

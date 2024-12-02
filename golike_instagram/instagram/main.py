@@ -17,6 +17,8 @@ from instagram_interection import (
 from login_instagram import (
     login_instagram
 )
+import one_tk
+import lg_get_ck
 from fake_interaction import send_random_fake_requests
 colorama.init()
 import cloudscraper
@@ -673,6 +675,8 @@ if __name__ == "__main__":
         print(system_color("| [3] xóa các passwords chung của instagram  |"))
         print(system_color("| [4] xem các passwords chung hiện đang lưu  |"))
         print(system_color("| [5] thêm thông tin instagram vào database  |"))
+        print(system_color("| [6] chế độ một tài khoản                   |"))
+        print(system_color("| [7] đăng nhập và lấy cookie instagram      |"))
         print(system_color(" --------------------------------------------"))
         print()
         print(system_color("[!] các chức năng chính ↓"))
@@ -700,6 +704,11 @@ if __name__ == "__main__":
         elif choose_inp.strip().lower() == "5":
             add_username_password_instagram()
             print()
+        elif choose_inp.strip().lower() == "6":
+            one_tk.main()
+            print()
+        elif choose_inp.strip().lower() == "7":
+            lg_get_ck.lg_get_ck()
         else:
             print(error_color("[!] vui lòng nhập đúng số thứ tự"))
             print()

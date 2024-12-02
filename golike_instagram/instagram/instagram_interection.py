@@ -296,9 +296,6 @@ def like_instagram(username, insta_link, object_id, cookies: str, proxy: bool = 
         if "errors" in insta_json_res:
             return {'error': "lỗi khi like"}
         insta_json_res['extensions']['cookies'] = new_cookies_string
-
-        # send fake requests for simulator real browser
-        send_random_fake_requests(username, cookies, 1, 10)
         return insta_json_res['extensions']
     
     # can inference None type error is this target is not found
@@ -392,8 +389,6 @@ def follow_instagram(username, insta_link, object_id, cookies: str, proxy: bool 
                     json.dump(cookies_load, file)
         
         insta_json_res = response.json()['data']["xdt_create_friendship"]["friendship_status"]
-        # send fake requests for simulator real browser
-        send_random_fake_requests(username, cookies, 1, 10)
         return {"following_status": insta_json_res["following"], "outgoing_request": insta_json_res['outgoing_request'], 'cookies': new_cookies_string}
     
     # can inference None type error is this target is not found
