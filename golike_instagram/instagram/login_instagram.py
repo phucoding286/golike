@@ -6,8 +6,20 @@ import os
 import json
 from instagram_interection import follow_instagram
 from pass_verify_automation import pass_verify_automation
+from pass_captcha import PassInstagramCaptcha, captcha_dectect
 colorama.init()
 
+# make color for logs
+def error_color(string: str):
+    return colorama.Fore.RED + str(string) + colorama.Style.RESET_ALL
+def success_color(string: str):
+    return colorama.Fore.GREEN + str(string) + colorama.Style.RESET_ALL
+def system_color(string: str):
+    return colorama.Fore.YELLOW + str(string) + colorama.Style.RESET_ALL
+def wait_color(string: str):
+    return colorama.Fore.BLUE + str(string) + colorama.Style.RESET_ALL
+def purple_color(string: str):
+    return colorama.Fore.MAGENTA + str(string) + colorama.Style.RESET_ALL
 
 # instagram user agents (for random)
 if not os.path.exists("./ua.json"):
@@ -42,7 +54,6 @@ headers = {
     "path": "/",
     "scheme": "https",
     "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-    "accept-encoding": "gzip, deflate, br, zstd",
     "accept-language": "vi",
     "cache-control": "max-age=0",
     "cookie": 'wd=954x746; dpr=1.25',
@@ -50,7 +61,7 @@ headers = {
     "priority": "u=0, i",
     "referer": "https://www.instagram.com/accounts/onetap/?next=%2F",
     "sec-ch-prefers-color-scheme": "dark",
-   "sec-ch-ua": "\"Microsoft Edge\";v=\"129\", \"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"129\"",
+    "sec-ch-ua": "\"Microsoft Edge\";v=\"129\", \"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"129\"",
     "sec-ch-ua-full-version-list": "\"Microsoft Edge\";v=\"129.0.2792.79\", \"Not=A?Brand\";v=\"8.0.0.0\", \"Chromium\";v=\"129.0.6668.90\"",
     "sec-ch-ua-mobile": "?0",
     "sec-ch-ua-model": "\"\"",
@@ -124,18 +135,17 @@ def __login(username, password, proxy=None):
     session = requests.Session()
     url = "https://www.instagram.com/api/v1/web/accounts/login/ajax/"
 
-    # get token CSRF
-    if ERR or CSRF_TOKEN is None or headers['User-Agent'] == "":
-        print(colorama.Fore.YELLOW + "[#] đang thay đổi user agent và lấy csrf token mới..." + colorama.Style.RESET_ALL)
-        try:
-            headers['User-Agent'] = random.choice(INSTAGRAM_USER_AGENT)
-            r = session.get("https://www.instagram.com/", headers=headers, proxies=proxy)
-            CSRF_TOKEN = r.cookies['csrftoken']
-            headers["X-CSRFToken"] = CSRF_TOKEN
-            headers['cookie'] = "; ".join([f"{cookie.name}={cookie.value}" for cookie in r.cookies]) + '; wd=954x746; dpr=1.25'
-            ERR = False
-        except:
-            return {"error": "có lỗi khi gửi yêu cầu để nhận csrf token"}
+    print(colorama.Fore.YELLOW + "[#] đang thay đổi user agent và lấy csrf token..." + colorama.Style.RESET_ALL)
+    try:
+        headers['User-Agent'] = random.choice(INSTAGRAM_USER_AGENT)
+        headers['cookie'] = 'wd=954x746; dpr=1.25'
+        r = requests.get("https://www.instagram.com/", headers=headers, proxies=proxy)
+        CSRF_TOKEN = r.cookies['csrftoken']
+        headers["X-CSRFToken"] = CSRF_TOKEN
+        headers['cookie'] = "; ".join([f"{cookie.name}={cookie.value}" for cookie in r.cookies]) + '; wd=954x746; dpr=1.25'
+    except Exception as e:
+        print(e)
+        return {"error": "có lỗi khi gửi yêu cầu để nhận csrf token"}
     
     # data have enc password
     data = {
@@ -165,6 +175,18 @@ def __login(username, password, proxy=None):
         elif not response.json()['authenticated']:
             return {"error": f"tài khoản {username} và mật khẩu (...) không tồn tại hoặc đã bị chặn!"}
         elif response.json()['authenticated'] and response.json()['userId'] and response.json()['oneTapPrompt']:
+            
+            # pass captcha (if have)
+            if captcha_dectect(cookie_string):
+                p = PassInstagramCaptcha(cookie_str=cookie_string)
+                o = p.captcha_auto_detecting_and_process()
+                if "success" in o:
+                    print(success_color(o['success']))
+                else:
+                    print(error_color(o['error']))
+            else:
+                print(system_color("Không phát hiện captcha!"))
+
             # skip verify automation
             print(colorama.Fore.BLUE + f"[#] đang bỏ qua xác thực tự động hóa..." + colorama.Style.RESET_ALL)
             res = pass_verify_automation(cookie_string)
@@ -172,6 +194,7 @@ def __login(username, password, proxy=None):
                 print(colorama.Fore.GREEN + f"[*] {res['success']}" + colorama.Style.RESET_ALL)
             else:
                 print(colorama.Fore.RED + f"[!] {res['error']}" + colorama.Style.RESET_ALL)
+
             return {"success": "đăng nhập thành công", "cookies": cookie_string, "proxy": proxy}
     except:
         ERR = True

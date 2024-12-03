@@ -39,6 +39,7 @@ def pass_verify_automation(cookies):
     headers["X-Csrftoken"] = cookies.split("csrftoken=")[1].split(";")[0]
     try:
         response = requests.post(url, headers=headers, data=data)
+        print(response.text)
         time.sleep(5)
         if "layout" in response.json():
             return {"success": "đã bỏ qua xác thực tự động hóa thành công"}
@@ -46,3 +47,5 @@ def pass_verify_automation(cookies):
             return {"error": "đã có lỗi khi bỏ qua xác thực tự động hóa"}
     except:
         return {"error": "đã có lỗi không xác định khi bỏ qua xác thực tự động hóa"}
+    
+print(pass_verify_automation("""ig_did=767A87F2-EF1C-47E1-80BC-92B113299FDB; datr=z1QvZ3K30tVES4b8CF_6Dt1q; ig_nrcb=1; ps_l=1; ps_n=1; fbm_124024574287414=base_domain=.instagram.com; mid=ZzwC0AALAAHmAlt17UCe-8GupgyV; dpr=1.25; csrftoken=qDbSKCQoCMUxPa5kEdkxrjbXN4KPJ0su; sessionid=69747827988%3AvH190khTk9b1Fb%3A22%3AAYd4wCd6tZJnhfauNHxShpZzwE35VuB0IhEeTmecFA; ds_user_id=69747827988; wd=982x703; rur="HIL\05469747827988\0541764768150:01f7901c1e772d6f65a37aa1460656447bd88bd7cac16846223e7ed1f353551c8a924848\""""))

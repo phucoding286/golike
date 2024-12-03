@@ -2,7 +2,6 @@ import colorama
 import time
 import json
 import os
-import requests
 from golike_features import (
     get_jobs,
     drop_job,
